@@ -1,0 +1,28 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:16.2
+    restart: unless-stopped
+    ports:
+      - 0.0.0.0:5432:5432
+    volumes:
+      - /share/dockerapps/databases/postgresql/data:/var/lib/postgresql/data
+      - /share/dockerapps/databases/postgresql/wal:/var/lib/postgresql/wal
+
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - PGID=100
+      - PUID=1003
+      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+      - POSTGRES_INITDB_ARGS=--data-checksums
+      - POSTGRES_INITDB_WALDIR=/var/lib/postgresql/wal
+      - POSTGRES_SSL_CERT_FILE=/var/lib/postgresql/data/server.crt
+      - POSTGRES_SSL_KEY_FILE=/var/lib/postgresql/data/server.key
+      - POSTGRES_SSL_CA_FILE=/var/lib/postgresql/data/ca.crt
+    networks:
+      - pgadmin4_databasenetwork
+
+networks:
+  pgadmin4_databasenetwork:
+    external: true
